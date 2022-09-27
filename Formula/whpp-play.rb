@@ -9,7 +9,6 @@ class WhppPlay < Formula
   depends_on "gstreamer"
   depends_on "gst-plugins-base"
   depends_on "gst-plugins-bad"
-  depends_on "gst-libav"
   depends_on "libsoup@2"
 
   def install
