@@ -6,10 +6,9 @@ class WhppPlay < Formula
   license "Apache-2.0"
 
   depends_on "cmake" => :build
-  depends_on "gstreamer"
-  depends_on "gst-plugins-base"
   depends_on "gst-plugins-bad"
-  depends_on "gst-libav"
+  depends_on "gst-plugins-base"
+  depends_on "gstreamer"
   depends_on "libsoup@2"
 
   def install
@@ -18,7 +17,7 @@ class WhppPlay < Formula
   end
 
   test do
-    output = shell_output("#{bin}/whpp-play", result = 1).strip
+    output = shell_output("#{bin}/whpp-play", 1).strip
     assert_match "Usage: ", output
   end
 end
