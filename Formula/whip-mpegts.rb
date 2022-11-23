@@ -1,15 +1,9 @@
 class WhipMpegts < Formula
   desc "MPEG-TS WHIP client"
   homepage "https://github.com/Eyevinn/whip-mpegts"
-  url "https://github.com/Eyevinn/whip-mpegts/archive/refs/tags/v0.4.0.tar.gz"
-  sha256 "7cce8b3c57627e12f2138ff7d09b8f7aa7002d048f426cd65a6cbf4646a483ed"
+  url "https://github.com/Eyevinn/whip-mpegts/archive/refs/tags/v0.5.0.tar.gz"
+  sha256 "e8e59e74cd294ab819e2b08ffee66bd9a3600d672e8ac519b075ccad30ff8996"
   license "Apache-2.0"
-
-  bottle do
-    root_url "https://github.com/Eyevinn/homebrew-tools/releases/download/whip-mpegts-0.4.0"
-    sha256 cellar: :any,                 big_sur:      "62ff53c08b25c9c866a2e8b88b3ecf01501b4d88353962180a09b1fbaf74a497"
-    sha256 cellar: :any_skip_relocation, x86_64_linux: "e66fbd29318d13eff9daddcffc1fad374c88986ddc2e4086cabb1433b8aa080c"
-  end
 
   depends_on "cmake" => :build
   depends_on "gst-libav"
