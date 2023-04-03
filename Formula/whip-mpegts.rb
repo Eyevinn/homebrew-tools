@@ -1,8 +1,8 @@
 class WhipMpegts < Formula
   desc "MPEG-TS WHIP client"
   homepage "https://github.com/Eyevinn/whip-mpegts"
-  url "https://github.com/Eyevinn/whip-mpegts/archive/refs/tags/v0.7.0.tar.gz"
-  sha256 "6131d541aa4ca3126df9765bea69d9bbe0ffb497039ff14cecfe2e129eb98104"
+  url "https://github.com/Eyevinn/whip-mpegts/archive/refs/tags/v0.7.1.tar.gz"
+  sha256 "bdeb5be8495a55e9d9a129851dee30bcb1c10538ef29fc09a311faacedb86aed"
   license "Apache-2.0"
 
   depends_on "cmake" => :build
