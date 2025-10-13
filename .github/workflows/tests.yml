@@ -4,14 +4,15 @@ on:
     branches:
       - main
   pull_request:
+
 jobs:
   test-bot:
     strategy:
       matrix:
         os: [ubuntu-latest, macos-latest]
     runs-on: ${{ matrix.os }}
-    steps:
 
+    steps:
       - name: Checkout repo
         uses: actions/checkout@v4
         with:
@@ -22,11 +23,40 @@ jobs:
         uses: Homebrew/actions/setup-homebrew@master
 
       - name: Ensure CI uses this PR's files (tap local workspace)
+        shell: bash
         run: |
+          set -euxo pipefail
           brew update-reset
+          # Ta bort ev. gammal tap
           brew untap ${{ github.repository }} || true
+          # Tappa in PR-workspace
           brew tap ${{ github.repository }} "$GITHUB_WORKSPACE"
           brew tap-info ${{ github.repository }}
+          # Verifiera att tap-path == workspace
+          TAP_PATH="$(brew --repo ${{ github.repository }})"
+          echo "Brew resolved tap path: $TAP_PATH"
+          echo "Workspace path:        $GITHUB_WORKSPACE"
+          if [[ "$TAP_PATH" != "$GITHUB_WORKSPACE" ]]; then
+            echo "ERROR: Brew tap path != checkout path"; exit 1
+          fi
+
+      - name: Debug show what Homebrew will read
+        shell: bash
+        run: |
+          set -euxo pipefail
+          echo "Repo: $GITHUB_REPOSITORY / Event: $GITHUB_EVENT_NAME"
+          echo "Workspace HEAD: $(git -C "$GITHUB_WORKSPACE" rev-parse HEAD)"
+          TAP_PATH="$(brew --repo ${{ github.repository }})"
+          echo "Tap HEAD (if git repo):" || true
+          git -C "$TAP_PATH" rev-parse HEAD || true
+          echo
+          echo "Formulas as seen by brew:"
+          ls -la "$TAP_PATH/Formula" || true
+          for f in "$TAP_PATH"/Formula/*.rb; do
+            echo "=== $(basename "$f")"
+            sed -n '1,120p' "$f"
+            echo
+          done
 
       - name: Cache Homebrew Bundler RubyGems
         id: cache
@@ -40,10 +70,16 @@ jobs:
         if: steps.cache.outputs.cache-hit != 'true'
         run: brew install-bundler-gems
 
+      - name: Debug run style & audit verbosely (non-fatal)
+        shell: bash
+        run: |
+          set -x
+          brew style ${{ github.repository }} --display-cop-names || true
+          brew readall --aliases --os=all --arch=all ${{ github.repository }} || true
+          brew audit --strict --except=installed --tap=${{ github.repository }} --online || true
+
       - run: brew test-bot --only-cleanup-before
-
       - run: brew test-bot --only-setup
-
       - run: brew test-bot --only-tap-syntax
 
       - run: brew test-bot --only-formulae

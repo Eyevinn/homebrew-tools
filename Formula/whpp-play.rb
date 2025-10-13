@@ -21,7 +21,7 @@ class WhppPlay < Formula
   end
 
   test do
-    output = shell_output("#{bin}/whpp-play", 1).strip
+    output = shell_output(`bin/"whpp-play"`, 1).strip
     assert_match "Usage: ", output
   end
 end

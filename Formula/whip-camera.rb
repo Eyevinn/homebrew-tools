@@ -21,7 +21,7 @@ class WhipCamera < Formula
   end
 
   test do
-    output = shell_output("#{bin}/whip-camera", 1).strip
+    output = shell_output(`bin/"whip-camera"`, 1).strip
     assert_match "Usage: GST_PLUGIN_PATH=", output
   end
 end
