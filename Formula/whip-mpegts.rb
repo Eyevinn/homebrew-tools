@@ -21,7 +21,7 @@ class WhipMpegts < Formula
   end
 
   test do
-    output = shell_output(`bin/"whip-mpegts"`, 1).strip
+    output = shell_output("#{bin/"whip-mpegts"} --help")
     assert_match "Usage: whip-mpegts", output
   end
 end
