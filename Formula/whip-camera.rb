@@ -12,7 +12,6 @@ class WhipCamera < Formula
   end
 
   depends_on "cmake" => :build
-  depends_on "glib" => :build
   depends_on "pkg-config" => :build
   depends_on "gstreamer"
   depends_on "libsoup@2"
