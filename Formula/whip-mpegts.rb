@@ -11,16 +11,16 @@ class WhipMpegts < Formula
     sha256 cellar: :any, arm64_sequoia: "9f65c9f6ee466d6975c3344fdb8e3be7f1efe0934ae51a6249facb29d9bddae7"
   end
 
-  
   depends_on "cmake" => :build
   depends_on "pkg-config" => :build
   depends_on "gstreamer"
   depends_on "libsoup@2"
-  
+
   def install
     system "cmake", "-DCMAKE_BUILD_TYPE=Release", "-G", "Unix Makefiles", ".", *std_cmake_args
     system "make", "install"
   end
+
   test do
     output = shell_output("#{bin}/whip-mpegts", 1).strip
     assert_match "Usage: whip-mpegts", output

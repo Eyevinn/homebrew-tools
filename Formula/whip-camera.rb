@@ -15,10 +15,11 @@ class WhipCamera < Formula
   depends_on "gstreamer"
   depends_on "libsoup@2"
 
-   def install
+  def install
     system "cmake", "-DCMAKE_BUILD_TYPE=Release", "-G", "Unix Makefiles", ".", *std_cmake_args
     system "make", "install"
   end
+
   test do
     output = shell_output("#{bin}/whip-camera", 1).strip
     assert_match "Usage: GST_PLUGIN_PATH=", output
