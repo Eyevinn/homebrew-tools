@@ -13,9 +13,6 @@ class WhipMpegts < Formula
 
   depends_on "cmake" => :build
   depends_on "pkg-config" => :build
-  depends_on "gst-libav"
-  depends_on "gst-plugins-bad"
-  depends_on "gst-plugins-base"
   depends_on "gstreamer"
   depends_on "libsoup@2"
 

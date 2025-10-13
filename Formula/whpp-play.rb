@@ -13,8 +13,6 @@ class WhppPlay < Formula
   end
 
   depends_on "cmake" => :build
-  depends_on "gst-plugins-bad"
-  depends_on "gst-plugins-base"
   depends_on "gstreamer"
   depends_on "libsoup@2"
 
