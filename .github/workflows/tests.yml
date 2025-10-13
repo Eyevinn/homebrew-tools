@@ -11,15 +11,22 @@ jobs:
         os: [ubuntu-latest, macos-latest]
     runs-on: ${{ matrix.os }}
     steps:
+
+      - name: Checkout repo
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
       - name: Set up Homebrew
         id: set-up-homebrew
         uses: Homebrew/actions/setup-homebrew@master
 
-      - name: Update/reset Homebrew (ensure latest core + casks + taps)
+      - name: Ensure CI uses this PR's files (tap local workspace)
         run: |
           brew update-reset
-          brew --version
-          brew config
+          brew untap ${{ github.repository }} || true
+          brew tap ${{ github.repository }} "$GITHUB_WORKSPACE"
+          brew tap-info ${{ github.repository }}
 
       - name: Cache Homebrew Bundler RubyGems
         id: cache
