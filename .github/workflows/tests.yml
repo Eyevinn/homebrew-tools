@@ -25,28 +25,29 @@ jobs:
         shell: bash
         run: |
           set -euxo pipefail
-
           brew update-reset
           brew untap ${{ github.repository }} || true
-
-          # Tap from the workspace (Homebrew will still clone into its Taps dir)
           brew tap ${{ github.repository }} "$GITHUB_WORKSPACE"
           TAP_PATH="$(brew --repo ${{ github.repository }})"
-
-          # Force the tap repo to the PR/MR SHA we just checked out
-          # (Homebrew otherwise checks out the default branch of the tap)
-          git -C "$TAP_PATH" fetch --force "$GITHUB_WORKSPACE" \
-            "+${GITHUB_SHA}:refs/heads/ci-pr"
+          git -C "$TAP_PATH" fetch --force "$GITHUB_WORKSPACE" "+${GITHUB_SHA}:refs/heads/ci-pr"
           git -C "$TAP_PATH" checkout -f ci-pr
-
           echo "Workspace HEAD: $(git -C "$GITHUB_WORKSPACE" rev-parse HEAD)"
           echo "Tap HEAD:       $(git -C "$TAP_PATH" rev-parse HEAD)"
-
-          # Sanity: show the formulas Homebrew will read
+          echo "Formulas Homebrew ser:"
           ls -la "$TAP_PATH/Formula" || true
-          for f in "$TAP_PATH"/Formula/*.rb; do
-            echo "=== $(basename "$f")"
-            sed -n '1,100p' "$f"
+
+      - name: Preflight deps (surface parse errors with line numbers)
+        shell: bash
+        env:
+          HOMEBREW_DEVELOPER: 1
+        run: |
+          set -euo pipefail
+          list=( eyevinn/tools/whip-camera eyevinn/tools/whip-mpegts eyevinn/tools/whpp-play )
+          for f in "${list[@]}"; do
+            echo "### Checking $f"
+            p="$(brew ruby -e "puts Formula[\"$f\"].path" || true)"
+            if [[ -n "$p" && -f "$p" ]]; then sed -n '1,60p' "$p"; fi
+            brew ruby -e 'f=Formula[ARGV[0]]; puts "name: #{f.name}"; puts "deps: #{f.deps.map(&:name).join(", ")}"' "$f"
             echo
           done
 
@@ -61,6 +62,14 @@ jobs:
       - name: Install Homebrew Bundler RubyGems
         if: steps.cache.outputs.cache-hit != 'true'
         run: brew install-bundler-gems
+
+      - name: Debug style/audit (non-fatal)
+        shell: bash
+        run: |
+          set -x
+          brew style ${{ github.repository }} --display-cop-names || true
+          brew readall --aliases --os=all --arch=all ${{ github.repository }} || true
+          brew audit --strict --except=installed --tap=${{ github.repository }} --online || true
 
       - run: brew test-bot --only-cleanup-before
       - run: brew test-bot --only-setup
