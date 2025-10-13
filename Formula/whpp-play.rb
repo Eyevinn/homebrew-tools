@@ -4,7 +4,6 @@ class WhppPlay < Formula
   url "https://github.com/Eyevinn/whpp-play/archive/refs/tags/v0.1.0.tar.gz"
   sha256 "6d321a1c8e8ef10fd650bee5c36d2d863545d4841bdd43f4576f120749954d2a"
   license "Apache-2.0"
-
   bottle do
     root_url "https://github.com/Eyevinn/homebrew-tools/releases/download/whpp-play-0.1.0"
     rebuild 1
@@ -14,14 +13,14 @@ class WhppPlay < Formula
 
   depends_on "cmake" => :build
   depends_on "gstreamer"
+  depends_on "libsoup@2"
 
   def install
     system "cmake", "-DCMAKE_BUILD_TYPE=Release", "-G", "Unix Makefiles", ".", *std_cmake_args
     system "make", "install"
   end
-
   test do
-    output = shell_output("#{bin/"whpp-play"} --help")
-    assert_match "Usage:", output
+    output = shell_output("#{bin}/whpp-play", 1).strip
+    assert_match "Usage: ", output
   end
 end
