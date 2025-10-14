@@ -15,6 +15,11 @@ jobs:
         id: set-up-homebrew
         uses: Homebrew/actions/setup-homebrew@master
 
+      - name: Ensure taps are up to date
+        run: |
+          brew update-reset
+          brew update --preinstall
+
       - name: Cache Homebrew Bundler RubyGems
         id: cache
         uses: actions/cache@v4
@@ -33,10 +38,17 @@ jobs:
 
       - run: brew test-bot --only-tap-syntax
 
+      - name: Show dep tree for changed formulae
+        run: |
+          brew test-bot --only-formulae-detect
+          brew deps eyevinn/tools/whip-camera --tree --include-build --include-test -v || true
+
+
       - run: brew test-bot --only-formulae
         if: github.event_name == 'pull_request'
-        env:
-          HOMEBREW_NO_INSTALL_FROM_API: 1
+        # if: github.event_name == 'pull_request'
+        # env:
+        #   HOMEBREW_NO_INSTALL_FROM_API: 1
 
       - name: Upload bottles as artifact
         if: always() && github.event_name == 'pull_request'
