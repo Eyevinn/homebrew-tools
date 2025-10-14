@@ -18,7 +18,7 @@ jobs:
       - name: Ensure taps are up to date
         run: |
           brew update-reset
-          brew update --preinstall
+          brew update
 
       - name: Cache Homebrew Bundler RubyGems
         id: cache
