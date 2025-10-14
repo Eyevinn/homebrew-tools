@@ -11,6 +11,11 @@ jobs:
         os: [ubuntu-latest, macos-latest]
     runs-on: ${{ matrix.os }}
     steps:
+      - name: Check out this tap
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0   # important for test-bot to detect changes
+
       - name: Set up Homebrew
         id: set-up-homebrew
         uses: Homebrew/actions/setup-homebrew@master
@@ -33,19 +38,12 @@ jobs:
         run: brew install-bundler-gems
 
       - run: brew test-bot --only-cleanup-before
-
       - run: brew test-bot --only-setup
-
       - run: brew test-bot --only-tap-syntax
-
-      - name: Show dep tree for changed formulae
-        run: |
-          brew test-bot --only-formulae-detect
-          brew deps eyevinn/tools/whip-camera --tree --include-build --include-test -v || true
-
 
       - run: brew test-bot --only-formulae
         if: github.event_name == 'pull_request'
+
         # if: github.event_name == 'pull_request'
         # env:
         #   HOMEBREW_NO_INSTALL_FROM_API: 1
