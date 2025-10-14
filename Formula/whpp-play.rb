@@ -13,10 +13,7 @@ class WhppPlay < Formula
   end
 
   depends_on "cmake" => :build
-  depends_on "gst-plugins-bad"
-  depends_on "gst-plugins-base"
   depends_on "gstreamer"
-  depends_on "libsoup@2"
 
   def install
     system "cmake", "-DCMAKE_BUILD_TYPE=Release", "-G", "Unix Makefiles", ".", *std_cmake_args
