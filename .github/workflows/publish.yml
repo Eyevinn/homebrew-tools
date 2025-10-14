@@ -33,3 +33,4 @@ jobs:
         env:
           BRANCH: ${{ github.event.pull_request.head.ref }}
         run: git push --delete origin "$BRANCH"
+
