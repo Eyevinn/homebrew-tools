@@ -4,6 +4,7 @@ class WhipCamera < Formula
   url "https://github.com/Eyevinn/whip-camera/archive/refs/tags/v0.1.0.tar.gz"
   sha256 "3ff2de84126ee3ada3f03700e60e5285df291dc86a367d1848b046a76157077f"
   license "Apache-2.0"
+
   bottle do
     root_url "https://github.com/Eyevinn/homebrew-tools/releases/download/whip-camera-0.1.0"
     sha256 cellar: :any,                 monterey:     "a8d49c73cc8cfe59feaf1a53afc3d1471f19d18c938cc463c8a657f522be5ed9"

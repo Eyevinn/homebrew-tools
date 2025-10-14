@@ -19,6 +19,7 @@ class WhppPlay < Formula
     system "cmake", "-DCMAKE_BUILD_TYPE=Release", "-G", "Unix Makefiles", ".", *std_cmake_args
     system "make", "install"
   end
+
   test do
     output = shell_output("#{bin}/whpp-play", 1).strip
     assert_match "Usage: ", output

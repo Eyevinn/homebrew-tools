@@ -1,7 +1,8 @@
 name: brew test-bot
 on:
   push:
-    branches: [ main ]
+    branches:
+      - main
   pull_request:
 jobs:
   test-bot:
@@ -9,28 +10,10 @@ jobs:
       matrix:
         os: [ubuntu-latest, macos-latest]
     runs-on: ${{ matrix.os }}
-    env:
-      HOMEBREW_GITHUB_API_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     steps:
-      - name: Check out this tap
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-
-      - name: Show we have the PR contents
-        run: |
-          git --no-pager log -1 --decorate=short --name-status
-          echo "Searching for old gst-* deps in working tree:"
-          (grep -RniE 'gst-(plugins-(good|bad|base)|libav)' || true)
-
       - name: Set up Homebrew
         id: set-up-homebrew
         uses: Homebrew/actions/setup-homebrew@master
-
-      - name: Ensure taps are up to date
-        run: |
-          brew update-reset
-          brew update
 
       - name: Cache Homebrew Bundler RubyGems
         id: cache
@@ -44,11 +27,17 @@ jobs:
         if: steps.cache.outputs.cache-hit != 'true'
         run: brew install-bundler-gems
 
-      - run: brew test-bot --tap="$GITHUB_REPOSITORY" --only-cleanup-before
-      - run: brew test-bot --tap="$GITHUB_REPOSITORY" --only-setup
-      - run: brew test-bot --tap="$GITHUB_REPOSITORY" --only-tap-syntax
-      - run: brew test-bot --tap="$GITHUB_REPOSITORY" --only-formulae
+      - run: brew test-bot --only-cleanup-before
+
+      - run: brew test-bot --only-setup
+
+      - run: brew test-bot --only-tap-syntax
+
+      - run: brew test-bot --only-formulae
+
         if: github.event_name == 'pull_request'
+        env:
+          HOMEBREW_NO_INSTALL_FROM_API: 1
 
       - name: Upload bottles as artifact
         if: always() && github.event_name == 'pull_request'
@@ -56,6 +45,3 @@ jobs:
         with:
           name: bottles
           path: '*.bottle.*'
-
-      - run: brew test-bot --tap="$GITHUB_REPOSITORY" --only-cleanup-after
-        if: always()
