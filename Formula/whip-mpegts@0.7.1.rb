@@ -5,6 +5,8 @@ class WhipMpegtsAT071 < Formula
   sha256 "bdeb5be8495a55e9d9a129851dee30bcb1c10538ef29fc09a311faacedb86aed"
   license "Apache-2.0"
 
+  keg_only :versioned_formula
+
   bottle do
     root_url "https://github.com/Eyevinn/homebrew-tools/releases/download/whip-mpegts-0.7.1"
     sha256 cellar: :any,                 monterey:     "65764d3406f7dff2f786d675b7adaf63948a561537bbef9b5c74fcab97fc40ec"
@@ -21,7 +23,7 @@ class WhipMpegtsAT071 < Formula
   end
 
   test do
-    output = shell_output("#{bin}/whip-mpegts", 1).strip
+    output = shell_output(bin/"whip-mpegts", 1).strip
     assert_match "Usage: whip-mpegts", output
   end
 end
