@@ -14,8 +14,10 @@ class WhipMpegts < Formula
   depends_on "cmake" => :build
   depends_on "pkg-config" => :build
   depends_on "gstreamer"
+  depends_on "libsoup@2"
 
   def install
+    ENV.prepend_path "PKG_CONFIG_PATH", Formula["libsoup@2"].opt_lib/"pkgconfig"
     system "cmake", "-DCMAKE_BUILD_TYPE=Release", "-G", "Unix Makefiles", ".", *std_cmake_args
     system "make", "install"
   end
