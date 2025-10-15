@@ -35,7 +35,10 @@ jobs:
 
       - name: Ensure homebrew/core tap
         if: runner.os == 'Linux'
-        run: brew tap homebrew/core
+        run: |
+          if ! brew tap | grep -Fxq "homebrew/core"; then
+            brew tap homebrew/core --force
+          fi
 
       - run: brew test-bot --only-formulae
         if: github.event_name == 'pull_request'
