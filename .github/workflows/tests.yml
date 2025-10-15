@@ -33,6 +33,13 @@ jobs:
 
       - run: brew test-bot --only-tap-syntax
 
+      - name: Ensure homebrew/core tap
+        if: runner.os == 'Linux'
+        run: |
+          if ! brew tap | grep -Fxq "homebrew/core"; then
+            brew tap homebrew/core --force
+          fi
+
       - run: brew test-bot --only-formulae
         if: github.event_name == 'pull_request'
         env:
@@ -42,5 +49,5 @@ jobs:
         if: always() && github.event_name == 'pull_request'
         uses: actions/upload-artifact@v4
         with:
-          name: bottles
+          name: bottles-${{ matrix.os }}
           path: '*.bottle.*'
